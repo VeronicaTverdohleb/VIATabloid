@@ -17,7 +17,7 @@ jobs:
       - name: Try the cluster !
         run: kubectl get pods -A
       - name: Build Springboot Image
-        working-directory: VIATabloid/NewsLetter/NewsletterSpringboot/SpringNews
+        working-directory: NewsLetter/NewsletterSpringboot/SpringNews
         run: |
           export SHELL=/bin/bash
           eval $(minikube -p minikube docker-env)
@@ -25,7 +25,7 @@ jobs:
           echo -n "Verifying images:"
           docker images
       - name: Build React Image
-        working-directory: VIATabloid/NewsLetter/NewsletterReact/my-app
+        working-directory: NewsLetter/NewsletterReact/my-app
         run: |
           export SHELL=/bin/bash
           eval $(minikube -p minikube docker-env)
@@ -33,7 +33,7 @@ jobs:
           echo -n "Verifying images:"
           docker images
       - name: Deploy Backend to Minikube
-        working-directory: VIATabloid/NewsLetter/NewsletterSpringboot/SpringNews
+        working-directory: NewsLetter/NewsletterSpringboot/SpringNews
         run: |
           kubectl apply -f ./deployment.yaml
           kubectl get deployments,pods,services -l app=springnews -n default
@@ -41,7 +41,7 @@ jobs:
           kubectl wait --for=condition=Ready pod -l app=postgresql-db -n default          
           kubectl get all
       - name: Deploy Frontend to Minikube
-        working-directory: VIATabloid/NewsLetter/NewsletterReact/my-app
+        working-directory: NewsLetter/NewsletterReact/my-app
         run: |
           kubectl apply -f ./deployment.yaml
           kubectl get deployments,pods,services -l app=my-app -n default

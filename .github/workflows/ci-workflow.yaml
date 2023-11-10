@@ -32,10 +32,10 @@ jobs:
           password: ${{ secrets.DOC_SECRET }}
 
       - name: Set execute permission on mvnw
-        run: chmod +x VIATabloid/NewsLetter/NewsletterSpringboot/springnews/mvnw
+        run: chmod +x NewsLetter/NewsletterSpringboot/SpringNews/mvnw
 
       - name: Build and Push Spring Boot Image
-        working-directory: VIATabloid/NewsLetter/NewsletterSpringboot/SpringNews
+        working-directory: NewsLetter/NewsletterSpringboot/SpringNews
         run: |
           ./mvnw package
           docker build . --tag ghcr.io/veronicatverdohleb/springnews:latest
@@ -47,7 +47,7 @@ jobs:
           node-version: 14
 
       - name: Build and Push React Image
-        working-directory: VIATabloid/NewsLetter/NewsletterReactg/my-app
+        working-directory: NewsLetter/NewsletterReact/my-app
         run: |
           # Build your React application
           npm install
@@ -57,7 +57,7 @@ jobs:
           docker push ghcr.io/veronicatverdohleb/my-app:latest
 
       - name: Build and Push PostgreSQL Image
-        working-directory: VIATabloid/NewsLetter/NewsletterSpringboot/SpringNews
+        working-directory: NewsLetter/NewsletterSpringboot/SpringNews
         run: |
           # You can use an official PostgreSQL image, so no build is required
           # Pull the official PostgreSQL image
