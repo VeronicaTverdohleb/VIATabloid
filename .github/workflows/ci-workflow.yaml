@@ -35,7 +35,7 @@ jobs:
         run: chmod +x VIATabloid/NewsLetter/NewsletterSpringboot/springnews/mvnw
 
       - name: Build and Push Spring Boot Image
-        working-directory: VIATabloid/NewsLetter/NewsletterSpringboot/SpringNews
+        working-directory: VIATabloid/NewsLetter/NewsletterSpringboot/springnews
         run: |
           ./mvnw package
           docker build . --tag ghcr.io/veronicatverdohleb/springnews:latest
