@@ -1,0 +1,40 @@
+# React Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app
+          image: my-app:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80 # Port for your React application
+
+---
+# React Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+spec:
+  ports:
+    - name: http
+      port: 80 # Port for your React application
+      targetPort: 80
+  selector:
+    app: my-app
+  type: NodePort
