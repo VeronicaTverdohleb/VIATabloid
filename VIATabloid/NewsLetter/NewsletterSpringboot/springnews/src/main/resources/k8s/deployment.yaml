@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springnews
+  labels:
+    app: kubernetes
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: springnews
+  template:
+    metadata:
+      name: kubernetes
+      labels:
+        app: springnews
+    spec:
+      containers:
+        - name: springnews
+          image: springnews:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          volumeMounts: # This is to attach a volume to a pod in a container (with the springboot app)
+            - name: config-volume # Specifies the name of the volume
+              mountPath: /config # Specifies the path within the container where the ConfigMap should be mounted
+            - name: secret-volume
+              mountPath: /secrets # Specifies the path within the container where the Secret data should be mounted
+      restartPolicy: Always
+      volumes:
+        - name: config-volume
+          configMap:
+            name: springboot-config
+        - name: secret-volume
+          secret:
+            secretName: postgresql-credentials
+
+
+---
+# Springboot Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: springnews
+  labels:
+    app: springnews
+spec:
+  selector:
+    app: springnews
+  ports:
+    - protocol: "TCP"
+      port: 8080 # Where the service is running
+      targetPort: 8080 # The port exposed by the service
+  type: NodePort # Type of service
+
+---
+# Postgresql Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-db
+  labels:
+    app: postgresql-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql-db
+  template:
+    metadata:
+      labels:
+        app: postgresql-db
+    spec:
+      containers:
+        - name: postgresql-db
+          image: postgres:13
+          env:
+            - name: POSTGRES_DB
+              value: tabloid_stories # These should obviously be changed based on your DB name
+            - name: POSTGRES_USER
+              value: postgres # Change based on your needs
+            - name: POSTGRES_PASSWORD
+              value: bobs # Change based on your needs
+          ports:
+            - containerPort: 5433 # Make sure the port below corresponds to this
+
+---
+# Postgresql Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-service
+  labels:
+    app: postgresql-db
+spec:
+  ports:
+    - name: postgresql
+      port: 5433 # Change so it corresponds to the container port where the DB is mounted
+  selector:
+    app: postgresql-db
+
+---
+# ConfigMap for the DB credentials
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: springboot-config
+data:
+  application.properties: |
+    spring.jpa.database=POSTGRESQL
+    spring.datasource.url=jdbc:postgresql://postgresql-service:5433/tabloid_stories   
+    spring.datasource.username=postgres
+    spring.datasource.password=bobs
+    spring.datasource.driver-class-name=org.postgresql.Driver
+    spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+    spring.jpa.hibernate.ddl-auto=update
+    server.port=8080
+
+---
+# Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgresql-credentials
+type: Opaque
+data:
+  username: postgres # Base64-encoded 'postgres'
+  password: bobs # Base64-encoded 'bobs'
+
+
+
+
+
