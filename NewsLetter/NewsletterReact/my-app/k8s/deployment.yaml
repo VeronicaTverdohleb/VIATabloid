@@ -20,7 +20,7 @@ spec:
           image: my-app:latest
           imagePullPolicy: Never
           ports:
-            - containerPort: 80 # Port for your React application
+            - containerPort: 3000 # Port for your React application
 
 ---
 # React Service
@@ -33,7 +33,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 80 # Port for your React application
+      port: 3000 # Port for your React application
       targetPort: 80
   selector:
     app: my-app
