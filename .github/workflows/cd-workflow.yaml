@@ -43,7 +43,7 @@ jobs:
       - name: Deploy Frontend to Minikube
         working-directory: NewsLetter/NewsletterReact/my-app
         run: |
-          kubectl apply -f ./deployment.yaml
+          kubectl apply -f ./k8s/deployment.yaml
           kubectl get deployments,pods,services -l app=my-app -n default
           kubectl wait --for=condition=Ready pod -l app=my-app -n default
           kubectl get all
@@ -56,7 +56,7 @@ jobs:
       - name: Ping URLs
         run: |
           curl -i http://localhost:8080/
-          curl -i http://localhost:8080/posts
+          curl -i http://localhost:8080/stories
           curl -i http://localhost:8070/
       - name: Cleanup
         run: |
