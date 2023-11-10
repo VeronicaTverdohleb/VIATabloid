@@ -32,10 +32,10 @@ jobs:
           password: ${{ secrets.DOC_SECRET }}
 
       - name: Set execute permission on mvnw
-        run: chmod +x VIATabloid/NewsLetter/NewsletterSpringboot/springnews/mvnw
+        run: chmod +x VIATabloid/NewsLetter/NewsletterSpringboot/SpringNews/mvnw
 
       - name: Build and Push Spring Boot Image
-        working-directory: VIATabloid/NewsLetter/NewsletterSpringboot/springnews
+        working-directory: VIATabloid/NewsLetter/NewsletterSpringboot/SpringNews
         run: |
           ./mvnw package
           docker build . --tag ghcr.io/veronicatverdohleb/springnews:latest
