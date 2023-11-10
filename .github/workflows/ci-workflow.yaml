@@ -47,7 +47,7 @@ jobs:
           node-version: 14
 
       - name: Build and Push React Image
-        working-directory: VIATabloid/NewsLetter/NewsletterReactg/my-app
+        working-directory: NewsLetter/NewsletterReactg/my-app
         run: |
           # Build your React application
           npm install
@@ -57,7 +57,7 @@ jobs:
           docker push ghcr.io/veronicatverdohleb/my-app:latest
 
       - name: Build and Push PostgreSQL Image
-        working-directory: VIATabloid/NewsLetter/NewsletterSpringboot/SpringNews
+        working-directory: NewsLetter/NewsletterSpringboot/SpringNews
         run: |
           # You can use an official PostgreSQL image, so no build is required
           # Pull the official PostgreSQL image
