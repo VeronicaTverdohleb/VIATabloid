@@ -1,0 +1,64 @@
+name: CD Workflow
+on:
+  # Trigger this by another workflow (it gets triggered by the ci-workflow)
+  workflow_call:
+  workflow_dispatch:
+jobs:
+  # Build job
+  job1:
+    name: Build and Deploy to Minikube
+    # Run on Ubuntu using the latest version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start Minikube
+        id: minikube
+        uses: medyagh/setup-minikube@latest
+      - name: Try the cluster !
+        run: kubectl get pods -A
+      - name: Build Springboot Image
+        working-directory: VIATabloid/NewsLetter/NewsletterSpringboot/SpringNews
+        run: |
+          export SHELL=/bin/bash
+          eval $(minikube -p minikube docker-env)
+          docker build -f ./Dockerfile -t springnews .
+          echo -n "Verifying images:"
+          docker images
+      - name: Build React Image
+        working-directory: VIATabloid/NewsLetter/NewsletterReactg/my-app
+        run: |
+          export SHELL=/bin/bash
+          eval $(minikube -p minikube docker-env)
+          docker build -f ./Dockerfile -t my-app .
+          echo -n "Verifying images:"
+          docker images
+      - name: Deploy Backend to Minikube
+        working-directory: VIATabloid/NewsLetter/NewsletterSpringboot/SpringNews
+        run: |
+          kubectl apply -f ./deploymeny.yaml
+          kubectl get deployments,pods,services -l app=springnews -n default
+          kubectl wait --for=condition=Ready pod -l app=springnews -n default
+          kubectl wait --for=condition=Ready pod -l app=postgresql-db -n default          
+          kubectl get all
+      - name: Deploy Frotend to Minikube
+        working-directory: VIATabloid/NewsLetter/NewsletterReactg/my-app
+        run: |
+          kubectl apply -f ./deployment.yaml
+          kubectl get deployments,pods,services -l app=my-app -n default
+          kubectl wait --for=condition=Ready pod -l app=my-app -n default
+          kubectl get all
+      - name: Test service URLs
+        run: |
+          echo "SERVICE_URL=$(minikube service springnews --url)"
+          echo "SERVICE_URL=$(minikube service my-app --url)"
+          kubectl port-forward service/springnews 8080:8080 &> /dev/null & sleep 10
+          kubectl port-forward service/my-app 8070:80 &> /dev/null & sleep 10
+      - name: Ping URLs
+        run: |
+          curl -i http://localhost:8080/
+          curl -i http://localhost:8080/posts
+          curl -i http://localhost:8070/
+      - name: Cleanup
+        run: |
+          eval $(minikube docker-env -u)
+          minikube delete
