@@ -35,7 +35,7 @@ jobs:
       - name: Deploy Backend to Minikube
         working-directory: NewsLetter/NewsletterSpringboot/SpringNews
         run: |
-          kubectl apply -f ./deployment.yaml
+          kubectl apply -f ./src/main/resources/k8s/deployment.yaml
           kubectl get deployments,pods,services -l app=springnews -n default
           kubectl wait --for=condition=Ready pod -l app=springnews -n default
           kubectl wait --for=condition=Ready pod -l app=postgresql-db -n default          
