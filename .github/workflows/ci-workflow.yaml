@@ -47,7 +47,7 @@ jobs:
           node-version: 14
 
       - name: Build and Push React Image
-        working-directory: NewsLetter/NewsletterReactg/my-app
+        working-directory: NewsLetter/NewsletterReact/my-app
         run: |
           # Build your React application
           npm install
