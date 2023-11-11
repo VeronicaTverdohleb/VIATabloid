@@ -55,7 +55,7 @@ jobs:
           kubectl port-forward service/my-app 8070:3000 &> /dev/null & sleep 20
       - name: Ping URLs
         run: |
-          curl -i http://localhost:3000/
+          curl -i http://localhost:3000
           curl -i http://localhost:8080/stories
       - name: Cleanup
         run: |
