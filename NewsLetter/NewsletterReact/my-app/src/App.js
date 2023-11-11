@@ -12,7 +12,7 @@ const App = () => {
 
   const fetchStories = async () => {
     try {
-      const response = await fetch("http://localhost:8070/stories"); // Adjust URL as needed
+      const response = await fetch("http://localhost:8080/stories"); // Adjust URL as needed
       if (!response.ok) {
         throw new Error("Network response was not ok " + response.statusText);
       }
@@ -28,7 +28,7 @@ const App = () => {
 
   const addStory = async (story) => {
     try {
-      const response = await fetch("http://localhost:8070", {
+      const response = await fetch("http://localhost:8080", {
         // Adjust URL as needed
         method: "POST",
         headers: {
@@ -50,7 +50,7 @@ const App = () => {
 
   const deleteStory = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8070/stories/${id}`, {
+      const response = await fetch(`http://localhost:8080/stories/${id}`, {
         // Adjust URL as needed
         method: "DELETE",
       });

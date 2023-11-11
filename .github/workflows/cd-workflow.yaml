@@ -52,12 +52,12 @@ jobs:
           echo "SERVICE_URL=$(minikube service springnews --url)"
           echo "SERVICE_URL=$(minikube service my-app --url)"
           kubectl port-forward service/springnews 8080:8080 &> /dev/null & sleep 20
-          kubectl port-forward service/my-app 8070:3000 &> /dev/null & sleep 20
+          kubectl port-forward service/my-app 8080:3000 &> /dev/null & sleep 20
       - name: Ping URLs
         run: |
           curl -i http://localhost:8080/
           curl -i http://localhost:8080/stories
-          curl -i http://localhost:8070/
+          curl -i http://localhost:8080/
       - name: Cleanup
         run: |
           eval $(minikube docker-env -u)
